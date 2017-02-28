@@ -5,8 +5,39 @@
     <title>Welcome</title>
   </head>
   <body>
-<h1>You did it</h1>
-<h4>You logged in</h4>
-<h6>Can you believe it?</h6>
+<h3>Hello {{request.session.first_name}}</h3>
+{% if messages %}
+  {% for message in messages %}
+    <p>{{message}}</p>
+  {% endfor %}
+{% endif %}
+<h1>Your Favorites</h1>
+  {% for favorite in my_favorites %}
+  <p>******************************************</p>
+  <p> Author {{favorite.quote_id.author}}</p>
+  <p>Quote {{favorite.quote_id.quote}}</p>
+  <p>Posted By <a href="/user_page/{{favorite.quote_id.creator.id}}">{{favorite.quote_id.creator.first_name}} {{favorite.quote_id.creator.last_name}}</a></p>
+  <a href="/del_favorites/{{favorite.id}}">Remove From Favorites</a>
+  <p>******************************************</p>
+  {% endfor %}
+
+<h1>Quotable Quotes</h1>
+  {% for favorite in other_quotes %}
+    <p>********************************************</p>
+    <p> Author {{favorite.author}}</p>
+    <p> Quote {{favorite.quote}}</p>
+    <p>Posted By <a href="/user_page/{{favorite.creator.id}}">{{favorite.creator.first_name}} {{favorite.creator.last_name}}</a></p>
+    <a href="/add_favorite/{{favorite.id}}">Add To My Favorites</a>
+    <p>********************************************</p>
+  {% endfor %}
+<form class="" action="/create_quote" method="post">
+  {% csrf_token %}
+  <label>Author</label>
+  <input type="text" name="author" value="">
+  <label>Quote</label>
+  <textarea name="quote_text" rows="8" cols="80"></textarea>
+  <input type="submit" name="" value="Add">
+</form>
+<a href="/logout">Logout</a>
   </body>
 </html>

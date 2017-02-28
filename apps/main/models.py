@@ -18,6 +18,8 @@ class UserManager(models.Manager):
             validation = False
         if len(user['email']) < 8:
             validation = False
+        if len(user['alias']) == 0:
+            validation = False
         if len(user['password']) < 8:
             validation = False
         if user.get('password') != user.get('password_confirm'):
@@ -29,7 +31,21 @@ class User(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.CharField(max_length=50)
+    alias = models.CharField(max_length=50)
     password = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+
+class Quote(models.Model):
+    quote = models.TextField()
+    author = models.CharField(max_length=50)
+    creator = models.ForeignKey(User, related_name='quote_origin')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Favorite(models.Model):
+    added_by = models.ForeignKey(User, related_name='user_added')
+    quote_id = models.ForeignKey(Quote, related_name='quote_source')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
